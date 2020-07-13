@@ -24,7 +24,7 @@ We start by cloning and building a specific branch of the moonbeam repo that you
 
 Follow the installation instructions on that page to set up Rust, install Substrate, and clone the repo.  Here is the output from the clone action from my laptop:
 
-![Output from clone action](/images/setting-up-node-1a.png)
+![Output from clone action](/images/setting-up-node-1b.png)
 
 Once you have cloned all the required repos, it's time to build the node by running:
 
@@ -57,18 +57,32 @@ Next we need to add Moonbeam custom types to Polkadot JS so it understands them.
 
 ``` json
 {
- "Address": "AccountId",
- "LookupSource": "AccountId",
- "Account": {
-   "nonce": "U256",
-   "balance": "U256"
- }
+  "Address": "AccountId",
+  "LookupSource": "AccountId",
+  "Account": {
+    "nonce": "U256",
+    "balance": "U256"
+  },
+  "Transaction": {
+    "nonce": "U256",
+    "action": "String",
+    "gas_price": "u64",
+    "gas_limit": "u64",
+    "value": "U256",
+    "input": "Vec<u8>",
+    "signature": "Signature"
+  },
+  "Signature": {
+    "v": "u64",
+    "r": "H256",
+    "s": "H256"
+  }
 }
 ```
 
 It should look like this in the UI:
 
-![Node selected in UI](/images/setting-up-node-5.png)
+![Node selected in UI](/images/setting-up-node-5a.png)
 
 With Polkadot JS properly set up, you can look at blocks being produced in the explorer view, examine the chain state, etc.
 
@@ -83,7 +97,7 @@ Navigate to Chain state, select the “evm” module, and select “accounts(H16
 
 Enter `0x6Be02d1d3665660d22FF9624b7BE0551ee1Ac91b` as the account whose state we want to query.  This is an account in the Moonbeam dev node that has been given an initial balance via the genesis configuration.  If you query this account, you should get a balance back that looks like this:
 
-![Querying the account](/images/setting-up-node-6.png)
+![Querying the account](/images/setting-up-node-6a.png)
 
 !!! note
     If you see “Unknown” in the response, check that the Moonbeam custom types have been loaded as described above.
