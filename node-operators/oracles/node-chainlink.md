@@ -13,7 +13,7 @@ This article provides an overview on setting up a Chainlink Oracle on Moonbase A
 
 ## Advanced users
 
-- Chainlink documentation: https://docs.chain.link/docs/running-a-chainlink-node
+- Chainlink documentation: [https://docs.chain.link/docs/running-a-chainlink-node](https://docs.chain.link/docs/running-a-chainlink-node)
 - Moonbase Alpha WSS: wss://wss.testnet.moonbeam.network
 - LINK Token on Moonbase Alpha: 0x2B13000735C0fC878673732Ee9bF8Ba5d76F7EC9
 - Faucet instructions: https://docs.moonbeam.network/getting-started/testnet/faucet/
@@ -191,8 +191,6 @@ In order to set this authorization, the `setFulfillmentPermission function` from
 
 Return to the Oracle contract deployed earlier in Remix and enter these values and execute the operation.
 
-## Test the Oracle
+#### Test the Oracle
 
-```
-
-```
+To verify the Oracle is up and answering requests, follow our [Using an Oracle]() Tutorial.
