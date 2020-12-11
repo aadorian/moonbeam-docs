@@ -76,7 +76,7 @@ GAS_UPDATER_ENABLED=false
 ALLOW_ORIGINS=*
 ETH_URL=wss://wss.testnet.moonbeam.network
 DATABASE_URL=postgresql://chainlink:{YOUR_PASSWORD_HERE}@localhost:5432/chainlink?sslmode=disable
-MINIMUM_CONTRACT_PAYMENT=0" > ~/.chainlink-moonbeam/.env
+MINIMUM_CONTRACT_PAYMENT=0" > ~/.chainlink-moonbeam/.env"
 ```
 
 MacOs users may replace `localhost` with `host.docker.internal`.
@@ -193,4 +193,4 @@ Return to the Oracle contract deployed earlier in Remix and enter these values a
 
 #### Test the Oracle
 
-To verify the Oracle is up and answering requests, follow our [Using an Oracle]() Tutorial.
+To verify the Oracle is up and answering requests, follow our [Using an Oracle](ntegrations/oracles/chainlink/) Tutorial.
