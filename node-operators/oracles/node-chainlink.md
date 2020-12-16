@@ -15,8 +15,9 @@ This article provides an overview on setting up a Chainlink Oracle on Moonbase A
 
 - Chainlink documentation: [https://docs.chain.link/docs/running-a-chainlink-node](https://docs.chain.link/docs/running-a-chainlink-node)
 - Moonbase Alpha WSS: wss://wss.testnet.moonbeam.network
-- LINK Token on Moonbase Alpha: 0x2B13000735C0fC878673732Ee9bF8Ba5d76F7EC9
-- Faucet instructions: https://docs.moonbeam.network/getting-started/testnet/faucet/
+- Moonbase Alpha ChainId: 1287
+- LINK Token on Moonbase Alpha: 0xa36085F69e2889c224210F603D836748e7dC0088
+- DEV Faucet instructions: https://docs.moonbeam.network/getting-started/testnet/faucet/
 
 ## Step by Step Instructions
 
@@ -83,7 +84,7 @@ MacOs users may replace `localhost` with `host.docker.internal`.
 
 #### Create a `.api` file in the new directory
 
-Stores the user and password used to access the node’s API, the node’s operator UI and the chainlink command line.
+Stores the user and password used to access the node’s API, the node’s operator UI and the Chainlink command line.
 
 Reminder, do not store any production passwords in a plaintext file. This is for example purposes only.
 
