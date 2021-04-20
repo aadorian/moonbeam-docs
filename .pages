@@ -3,7 +3,10 @@ arrange:
   - overview
   - getting-started
   - networks
+  - governance
+  - staking
   - integrations
+  - dapps-list
   - node-operators
   - learn
   - resources

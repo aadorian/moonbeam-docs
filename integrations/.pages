@@ -1,12 +1,12 @@
 title: Integrations
 arrange:
   - bridges
-  - jslibraries
+  - ethlibraries
   - oracles
-  - metamask.md
+  - wallets
+  - explorers.md
   - remix.md
   - trufflebox.md
+  - hardhat.md
   - pubsub.md
   - precompiles.md
-  - polkadotjs.md
-
