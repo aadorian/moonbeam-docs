@@ -1,24 +1,25 @@
 ---
-title: Deploy a Contract
-description: Learn how to deploy unmodified and unchanged Solidity-based smart contracts to a Moonbeam with a simple script using Ethers.js.
+title: Implementar un contrato
+description: Aprenda a desplegar contratos inteligentes basados ​​en Solidity utilizando Moonbeam,  sin modificar y sin realizar cambios usando  un  script sencillo de Ethers.js 
 ---
 
-# Using Ethers.js to Deploy Smart Contracts on Moonbeam
+# Utilizando Ethers.js para desplegar Contratos Inteligentes en Moonbeam
 
-## Introduction  
-This guide walks you through the process of using the Solidity compiler and [ethers.js](https://docs.ethers.io/) to deploy and interact with a Solidity-based smart contract on a Moonbeam standalone node. Given Moonbeam’s Ethereum compatibility features, the ethers.js library can be used directly with a Moonbeam node.
+## Introducción
+Esta guía lo guía a través del proceso de uso del compilador Solidity y [ethers.js] (https://docs.ethers.io/) para implementar e interactuar con un contrato inteligente basado en Solidity en un nodo stand-alone de Moonbeam. Dadas las características de compatibilidad con Ethereum de Moonbeam, la biblioteca ethers.js se puede usar directamente con un nodo Moonbeam.
 
-The guide assumes that you have a local Moonbeam node running in `--dev` mode. You can find instructions to set up a local Moonbeam node [here](/getting-started/local-node/setting-up-a-node/).
+La presente guía asume que se encuentra en el contexto de un nodo Moonbeam local ejecutándose en modo `--dev`. Puede encontrar instrucciones para configurar un nodo local [aquí] Moonbeam (/getting-started/local-node/setting-up-a-node/).
 
 !!! note
-    This tutorial was created using the v3 release of [Moonbase Alpha](https://github.com/PureStake/moonbeam/releases/tag/v0.3.0). The Moonbeam platform, and the [Frontier](https://github.com/paritytech/frontier) components it relies on for Substrate-based Ethereum compatibility, are still under very active development. The examples in this guide assume an Ubuntu 18.04-based environment and will need to be adapted accordingly for MacOS or Windows.
+Este tutorial se creó utilizando la versión v3 de [Moonbase Alpha] (https://github.com/PureStake/moonbeam/releases/tag/v0.3.0). La plataforma Moonbeam y los componentes de [Frontier] (https://github.com/paritytech/frontier) en los que se basa para la compatibilidad con Ethereum desarrollado en Substrate, aún se encuentran en un desarrollo constante. Los ejemplos de esta guía asumen un entorno basado en Ubuntu 18.04 y deberán adaptarse en consecuencia para MacOS o Windows.
 
-## Checking Prerequisites
-If you followed this [tutorial](/getting-started/local-node/setting-up-a-node/), you should have a standalone Moonbeam node producing blocks in your local environment, that looks like this:
+## Verificando Prerequisitos
+
+Siguiendo este [tutorial](/getting-started/local-node/setting-up-a-node/), debería tener un nodo Moonbeam "stand-alone" produciendo bloques en su entorno local, que se ve así:
 
 ![Moonbeam local node](/images/etherscontract/ethers-contract-1.png)
 
-In addition, we need to install Node.js (we'll go for v15.x) and the npm package manager. You can do this by running in your terminal:
+Además, necesitamos instalar Node.js (usaremos v15.x) y el administrador de paquetes npm. Puede hacer esto ejecutando en su terminal:
 
 ```
 curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
@@ -28,7 +29,7 @@ curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
 
-We can verify that everything installed correctly by querying the version for each package:
+Podemos verificar que todo se instaló correctamente consultando la versión de cada paquete:
 
 ```
 node -v
@@ -38,21 +39,21 @@ node -v
 npm -v
 ```
 
-As of the writing of this guide, versions used were 15.2.1 and 7.0.8, respectively.
+En el momento de redactar esta guía, las versiones utilizadas fueron 15.2.1 y 7.0.8, respectivamente.
 
-Next, we can create a directory to store all our relevant files (in a separate path from the local Moonbeam node files) by running:
+A continuación, podemos crear un directorio para almacenar todos nuestros archivos relevantes (en una ruta separada de los archivos del nodo Moonbeam local) ejecutando:
 
 ```
 mkdir incrementer && cd incrementer/
 ```
 
-And create a simple package.json file:
+Y cree un archivo package.json simple:
 
 ```
 npm init --yes
 ```
 
-With the package.json file created, we can then install both the ethers.js and the Solidity compiler (fixed at version v0.7.4) packages, by executing:
+Con el archivo package.json creado, podemos instalar los paquetes ethers.js y el compilador Solidity (corregido en la versión v0.7.4), ejecutando:
 
 ```
 npm install ethers
@@ -62,8 +63,7 @@ npm install ethers
 npm install solc@0.7.4
 ```
 
-To verify the installed version of ethers.js or the Solidity compiler you can use the `ls` command:
-
+Para verificar la versión instalada de ethers.js o el compilador Solidity, puede usar el comando `ls`:
 ```
 npm ls ethers
 ```
@@ -72,116 +72,129 @@ npm ls ethers
 npm ls solc
 ```
 
-As of the writing of this guide, versions used were 5.0.22 and 0.7.4 (as mentioned before), respectively.
+En el momento de redactar esta guía, las versiones utilizadas fueron 5.0.22 y 0.7.4 (como se mencionó anteriormente), respectivamente.
 
-Similarly to our [web3.js contract tutorial](/getting-started/local-node/web3-js/web3-contract/), we will use that setup for this example, so some files we'll look similar:
 
--  _Incrementer.sol_: the file with our Solidity code
--  _compile.js_: it will compile the contract with the Solidity compiler
--  _deploy.js_: it will handle the deployment to our local Moonbeam node
--  _get.js_: it will make a call to the node to get the current value of the number
--  _increment.js_: it will make a transaction to increment the number stored on the Moonbeam node
--  _reset.js_: the function to call that will reset the number stored to zero
+De manera similar a nuestro [web3.js contract tutorial](/getting-started/local-node/web3-js/web3-contract/), usaremos esa configuración para este ejemplo, por lo que algunos archivos se verán similares:
 
-## The Contract File and Compile Script
-Even though we are using a different library, these two files remain identical. The first being the smart contract written in Solidity, and the second being the compile script, both of which do not require the web3.js or ethers.js libraries.
 
-### The contract file
-The contract we will use is a very simple incrementer (arbitrarily named _Incrementer.sol_, and which you can find [here](/code-snippets/web3-contract-local/Incrementer.sol)). The Solidity code is the following:
+-  _Incrementer.sol_: el archivo con nuestro código Solidity
+-  _compile.js_: compilará el contrato con el compilador de Solidity
+-  _deploy.js_: manejará la implementación en nuestro nodo Moonbeam local
+-  _get.js_: hará una llamada al nodo para obtener el valor actual del número
+-  _increment.js_: hará una transacción para incrementar el número almacenado en el nodo Moonbeam
+-  _reset.js_: la función a llamar que restablecerá el número almacenado a cero
+
+## El archivo de contrato y el script de compilación
+Aunque estamos usando una librería diferente, estos dos archivos siguen siendo idénticos. El primero es el contrato inteligente escrito en Solidity y el segundo es el script de compilación, los cuales no requieren las bibliotecas web3.js o ethers.js.
+
+### El archivo del contrato
+
+El contrato que usaremos es un incrementador muy simple (llamado arbitrariamente _Incrementer.sol_, y que puede encontrar [here](/code-snippets/web3-contract-local/Incrementer.sol)). El código de Solidity es el siguiente:
 
 ```solidity
 --8<-- 'web3-contract-local/Incrementer.sol'
 ```
 
-Our `constructor` function, that runs when the contract is deployed, sets the initial value of the number variable that is stored in the Moonbeam node (default is 0). The `increment` function adds `_value` provided to the current number, but a transaction needs to be sent as this modifies the stored data. And lastly, the `reset` function resets the stored value to zero.
+Nuestra función `constructor`, que se ejecuta cuando se implementa el contrato, establece el valor inicial de la variable numérica que se almacena en el nodo Moonbeam (el valor predeterminado es 0). La función `increment` agrega` _value` proporcionado al número actual, pero es necesario enviar una transacción ya que esto modifica los datos almacenados. Y, por último, la función `reset` restablece el valor almacenado a cero.
 
 !!! note
-    This contract is just a simple example that does not handle values wrapping around, and it is only for illustration purposes.
+   Este contrato es solo un ejemplo simple que no maneja valores "wrapped", y es solo para fines ilustrativos.
 
-### The compile file
+### El archivo de compilación
 
-The only purpose of the _compile.js_ file (arbitrarily named, and which you can find [here](/code-snippets/web3-contract-local/compile.js)), is to use the Solidity compiler to output the bytecode and interface of our contract.
 
-First, we need to load the different modules that we will use for this process. The _path_ and _fs_ modules are included by default in Node.js (that is why we didn't have to install it before).
+El único propósito del archivo _compile.js_ (nombrado arbitrariamente, y que puede encontrar [aquí] [here](/code-snippets/web3-contract-local/compile.js)), es usar el compilador Solidity para generar el código de bytes y interfaz de nuestro contrato.
 
-Next, we have to read the content of the Solidity file (in UTF8 encoding).
+Primero, necesitamos cargar los diferentes módulos que usaremos para este proceso. Los módulos _path_ y _fs_ están incluidos por defecto en Node.js (por eso no tuvimos que instalarlo antes).
 
-Then, we build the input object for the Solidity compiler.
+A continuación, tenemos que leer el contenido del archivo Solidity (en codificación UTF8).
 
-And finally, we run the compiler and extract the data related to our incrementer contract because, for this simple example, that is all we need.
+Luego, construimos el objeto de entrada para el compilador Solidity.
+
+Y finalmente, ejecutamos el compilador y extraemos los datos relacionados con nuestro contrato de incremento porque, para este simple ejemplo, eso es todo lo que necesitamos.
 
 ```javascript
 --8<-- 'web3-contract-local/compile.js'
 ```
 
-## The Deploy Script and Interacting with our Contract
-In this section we will see some differences between libraries regarding deployment of contracts, but with the same end  result.
+## Deploy del script e interacción con nuestro contrato
+En esta sección veremos algunas diferencias entre bibliotecas con respecto al despliegue de contratos, pero con el mismo resultado final.
 
-### The deploy file
-The deployment file (which you can find [here](/code-snippets/ethers-contract-local/deploy.js)) is divided into two subsections: the initialization and the deploy contract.
+### El archivo desplegado
 
-First, we need to load our ethers.js module and the export of the _compile.js_ file, from which we will extract the `bytecode` and `abi`.
 
-Next, define the `privKey` variable as the private key of our genesis account, which is where all the funds are stored when deploying your local Moonbeam node. Remember that in ethers.js we need to provide the prefix `0x`. In addition, we have to define the provider by passing in the standalone Moonbeam node RPC URL. Both of these will be used to create the `wallet` instance and access all its methods.
+El archivo de implementación (que puede encontrar [here](/code-snippets/ethers-contract-local/deploy.js)) se divide en dos subsecciones: la inicialización y el contrato de implementación.
 
-To deploy the contract, first we need to create a local instance using the `ethers.ContractFactory(abi, bytecode, wallet)`. Then, wrapped in an async function, we can use the `deploy(args)` method of this local instance, which uses a signer to deploy the contract with the arguments passed into the constructor. This promise returns the transaction that contains the address where it will be deployed. By using the `contract.deployed()` method, we wait of the transaction to be processed. 
+
+Primero, necesitamos cargar nuestro módulo ethers.js y exportar el archivo _compile.js_, del cual extraeremos el `bytecode` y` abi`.
+
+A continuación, definimos la variable `privKey` como la clave privada de nuestra cuenta génesis, que es donde se almacenan todos los fondos al implementar el nodo Moonbeam local. Recuerdar que en ethers.js debemos proporcionar el prefijo `0x`. Además, tenemos que definir el proveedor pasando la URL de RPC del nodo Moonbeam independiente. Ambos se utilizarán para crear la instancia de `wallet` y acceder a todos sus métodos.
+
+Para desplegar el contrato, primero necesitamos crear una instancia local usando `ethers.ContractFactory (abi, bytecode, wallet)`. Luego,  en una función asíncrona, podemos usar el método `deploy (args)` de esta instancia local, que usa una firma para desplegar el contrato con los argumentos pasados ​​al constructor, para luego  devolver la transacción que contiene la dirección donde se desplegará. Al usar el método `contract.deployed ()`, esperamos que la transacción sea procesada.
 
 ```javascript
 --8<-- 'ethers-contract-local/deploy.js'
 ```
 
 !!! note
-    The _deploy.js_ script provides the contract address as an output. This comes handy as it is used for the contract interaction files.
+   El script _deploy.js_ proporciona la dirección del contrato como salida. Esto resulta útil ya que se utiliza para los archivos de interacción del contrato.
 
-### Files to interact with the contract
-In this section, we will quickly go over the files that interact with our contract, either by making calls or sending transactions to modify its storage
+### Archivos para interactuar con el contrato
+En este apartado repasaremos rápidamente los archivos que interactúan con nuestro contrato, ya sea realizando llamadas o enviando transacciones para modificar su almacenamiento.
 
-First, let's overview the _get.js_ file (the simplest of them all, which you can find [here](/code-snippets/ethers-contract-local/get.js)), that fetches the current value stored on the contract. We need to load our ethers.js module and the export of the _compile.js_ file, from which we will extract the `abi`. Next, we define the provider so we can access the methods necessary to call our contract
 
-The following step is to create a local instance of the contract by using the `ethers.Contract(contractAddress, abi, provider)` command. The `contractAddress` is logged in the console by the _deploy.js_ file. This local instance is being defined with the `provider`, so only read-only methods are available. Then, wrapped in an async function, we can write the contract call by running `contractInstance.myMethods()`, where we set the method or function that we want to call and provide the inputs for this call. This promise returns the data that we can log in the console. And lastly, we run our `get` function.
+Primero, revisemos el archivo _get.js_ (el más simple de todos, que puede encontrar (the simplest of them all, which you can find [here](/code-snippets/ethers-contract-local/get.js))), que recupera el valor actual almacenado en el contrato . Necesitamos cargar nuestro módulo ethers.js y exportar el archivo _compile.js_, del cual extraeremos el `abi`. A continuación, definimos el proveedor para poder acceder a los métodos necesarios para llamar a nuestro contrato.
 
+
+El siguiente paso es crear una instancia local del contrato usando el comando `ethers.Contract (contractAddress, abi, provider)`. El `contractAddress` se registra en la consola mediante el archivo _deploy.js_. Esta instancia local se está definiendo con el `proveedor`, por lo que solo están disponibles los métodos de solo lectura. Luego, envuelto en una función asíncrona, podemos escribir la llamada del contrato ejecutando `contractInstance.myMethods ()`, donde establecemos el método o función que queremos llamar y proporcionamos las entradas para esta llamada. Esta promesa devuelve los datos que podemos iniciar sesión en la consola. Y por último, ejecutamos nuestra función "get".
 ```javascript
 --8<-- 'ethers-contract-local/get.js'
 ```
 
-Let's now define the file to send a transaction that will add the value provided to our number. The _increment.js_ file (which you can find [here](/code-snippets/ethers-contract-local/increment.js)) is somewhat different to the previous example, and that is because here we are modifying the stored data, and for this, we need to send a transaction that pays gas. In the case of ethers.js, the initialization is similar to the one on the deployment script, where we defined a provider and a wallet. However, the contract address and the value to be added are included as well.
+Definamos ahora el archivo para enviar una transacción que agregará el valor proporcionado a nuestro número. El archivo _increment.js_ [here](/code-snippets/ethers-contract-local/increment.js)) es algo diferente al ejemplo anterior, y eso se debe a que aquí estamos modificando los datos almacenados, y para ello, necesitamos enviar una transacción que pague el gas. En el caso de ethers.js, la inicialización es similar a la del script de implementación, donde definimos un proveedor y una billetera. Sin embargo, también se incluyen la dirección del contrato y el valor agregado.
 
-The contract transaction starts by creating a local instance of the contract as before, but in this case we pass in the `wallet` as a signer, to have read-write access to the methods of the contract.
 
-Then, we use the `increment` method of the local instance, providing the value to increment our number by. Ethers.js will proceed to create the transaction object, send the transaction, and return the receipt. We can leverage the `wait()` method of the transaction response to wait for it to be processed.
+
+La transacción del contrato comienza creando una instancia local del contrato como antes, pero en este caso pasamos a la `wallet` como firmante, para tener acceso de lectura y escritura a los métodos del contrato.
+
+
+Luego, usamos el método `increment` de la instancia local, proporcionando el valor para incrementar nuestro número. Ethers.js procederá a crear el objeto de transacción, enviará la transacción y devolverá el recibo. Podemos aprovechar el método `wait ()` de la respuesta de la transacción para esperar a que se procese.
+
 
 ```js
 --8<-- 'ethers-contract-local/increment.js'
 ```
+El archivo _reset.js_ (que puede encontrar  [aqui](/code-snippets/ethers-contract-local/reset.js), es casi idéntico al ejemplo anterior. La única diferencia es que necesitamos llamar al método `reset ()` que no toma ninguna entrada. En este caso, estamos configurando manualmente el límite de gas de la transacción en `40000`, ya que el método` calculateGas () `devuelve un valor no válido (algo en lo que estamos trabajando).
 
-The _reset.js_ file (which you can find [here](/code-snippets/ethers-contract-local/reset.js)), is almost identical to the previous example. The only difference is that we need to call the `reset()` method which takes no input. In this case, we are manually setting the gas limit of the transaction to `40000`, as the `estimatedGas()` method returns an invalid value (something we are working on).
+
 
 ```js
 --8<-- 'ethers-contract-local/reset.js'
 ```
 
-## Interacting with the Contract
-With all the files ready, we can proceed to deploy our contract the local Moonbeam node. To do this, we execute the following command in the directory where all the files are:
+## Interactuar con el contrato
+Con todos los archivos listos, podemos proceder a implementar nuestro contrato en el nodo Moonbeam local. Para ello, ejecutamos el siguiente comando en el directorio donde se encuentran todos los archivos:
 
 ```
 node deploy.js
 ```
 
-After a successful deployment, you should get the following output:
+Después de una implementación exitosa, debería obtener el siguiente resultado:
 
 ![Moonbeam local node](/images/etherscontract/ethers-contract-2.png)
 
-First, let's check and confirm that that the value stored is equal to the one we passed in as the input of the constructor function (that was 5), we do this by running:
+Primero, verifiquemos y confirmemos que el valor almacenado es igual al que pasamos como entrada de del constructor (que era 5), ​​lo hacemos ejecutando:
 
 ```
 node get.js
 ```
 
-With the following output:
+Con la siguiente salida:
 
 ![Moonbeam local node](/images/etherscontract/ethers-contract-3.png)
 
-Then, we can use our incrementer file, remember that `_value = 3`. We can immediately use our getter file to prompt the value after the transaction:
+Luego, podemos usar nuestro archivo incrementador, recuerdar que `_value = 3`. Podemos usar inmediatamente nuestro archivo getter para solicitar el valor después de la transacción:
 
 ```
 node incrementer.js
@@ -191,11 +204,11 @@ node incrementer.js
 node get.js
 ```
 
-With the following output:
+Con la siguiente salida:
 
 ![Moonbeam local node](/images/etherscontract/ethers-contract-4.png)
 
-Lastly, we can reset our number by using the reset file:
+Por último, podemos restablecer nuestro número utilizando el archivo de restablecimiento:
 
 ```
 node reset.js
@@ -205,9 +218,11 @@ node reset.js
 node get.js
 ```
 
-With the following output:
+Con la siguiente salida:
 
 ![Moonbeam local node](/images/etherscontract/ethers-contract-5.png)
 
-## We Want to Hear From You
-This example provides context on how you can start working with Moonbeam and how you can try out its Ethereum compatibility features such as the ethers.js library. We are interested in hearing about your experience following the steps in this guide or your experience trying other Ethereum-based tools with Moonbeam. Feel free to join us in the [Moonbeam Discord here](https://discord.gg/PfpUATX). We would love to hear your feedback on Moonbeam and answer any questions that you have.
+## Nosotros queremos saber de ti
+
+Este ejemplo proporciona un contexto sobre cómo puede comenzar a trabajar con Moonbeam y cómo puede probar sus características de compatibilidad con Ethereum, como la biblioteca ethers.js. Estamos interesados ​​en conocer su experiencia siguiendo los pasos de esta guía o su experiencia probando otras herramientas basadas en Ethereum con Moonbeam. No dudes en unirte a nosotros en [Moonbeam Discord here](https://discord.gg/PfpUATX). Nos encantaría escuchar sus comentarios sobre Moonbeam y responder cualquier pregunta que tengas.
+
