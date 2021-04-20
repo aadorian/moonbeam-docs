@@ -6,12 +6,12 @@ description: Aprenda a desplegar contratos inteligentes basados ​​en Solidit
 # Utilizando Ethers.js para desplegar Contratos Inteligentes en Moonbeam
 
 ## Introducción
-Esta guía lo guía a través del proceso de uso del compilador Solidity y [ethers.js] (https://docs.ethers.io/) para implementar e interactuar con un contrato inteligente basado en Solidity en un nodo stand-alone de Moonbeam. Dadas las características de compatibilidad con Ethereum de Moonbeam, la biblioteca ethers.js se puede usar directamente con un nodo Moonbeam.
+Esta guía lo guía a través del proceso de uso del compilador Solidity y [ethers.js](https://docs.ethers.io/) para implementar e interactuar con un contrato inteligente basado en Solidity en un nodo stand-alone de Moonbeam. Dadas las características de compatibilidad con Ethereum de Moonbeam, la biblioteca ethers.js se puede usar directamente con un nodo Moonbeam.
 
-La presente guía asume que se encuentra en el contexto de un nodo Moonbeam local ejecutándose en modo `--dev`. Puede encontrar instrucciones para configurar un nodo local [aquí] Moonbeam (/getting-started/local-node/setting-up-a-node/).
+La presente guía asume que se encuentra en el contexto de un nodo Moonbeam local ejecutándose en modo `--dev`. Puede encontrar instrucciones para configurar un nodo local Moonbeam [aqui](/getting-started/local-node/setting-up-a-node/).
 
 !!! note
-Este tutorial se creó utilizando la versión v3 de [Moonbase Alpha] (https://github.com/PureStake/moonbeam/releases/tag/v0.3.0). La plataforma Moonbeam y los componentes de [Frontier] (https://github.com/paritytech/frontier) en los que se basa para la compatibilidad con Ethereum desarrollado en Substrate, aún se encuentran en un desarrollo constante. Los ejemplos de esta guía asumen un entorno basado en Ubuntu 18.04 y deberán adaptarse en consecuencia para MacOS o Windows.
+Este tutorial se creó utilizando la versión v3 de [Moonbase Alpha](https://github.com/PureStake/moonbeam/releases/tag/v0.3.0). La plataforma Moonbeam y los componentes de [Frontier](https://github.com/paritytech/frontier) en los que se basa para la compatibilidad con Ethereum desarrollado en Substrate, aún se encuentran en un desarrollo constante. Los ejemplos de esta guía asumen un entorno basado en Ubuntu 18.04 y deberán adaptarse en consecuencia para MacOS o Windows.
 
 ## Verificando Prerequisitos
 
@@ -53,7 +53,7 @@ Y cree un archivo package.json simple:
 npm init --yes
 ```
 
-Con el archivo package.json creado, podemos instalar los paquetes ethers.js y el compilador Solidity (corregido en la versión v0.7.4), ejecutando:
+Con el archivo package.json creado, podemos instalar los paquetes ethers.js y el compilador Solidity (en la versión v0.7.4), ejecutando:
 
 ```
 npm install ethers
@@ -75,7 +75,7 @@ npm ls solc
 En el momento de redactar esta guía, las versiones utilizadas fueron 5.0.22 y 0.7.4 (como se mencionó anteriormente), respectivamente.
 
 
-De manera similar a nuestro [web3.js contract tutorial](/getting-started/local-node/web3-js/web3-contract/), usaremos esa configuración para este ejemplo, por lo que algunos archivos se verán similares:
+De manera similar a nuestro [tutorial contrato web3](/getting-started/local-node/web3-js/web3-contract/), usaremos esa configuración para este ejemplo, por lo que algunos archivos se verán similares:
 
 
 -  _Incrementer.sol_: el archivo con nuestro código Solidity
@@ -86,11 +86,12 @@ De manera similar a nuestro [web3.js contract tutorial](/getting-started/local-n
 -  _reset.js_: la función a llamar que restablecerá el número almacenado a cero
 
 ## El archivo de contrato y el script de compilación
-Aunque estamos usando una librería diferente, estos dos archivos siguen siendo idénticos. El primero es el contrato inteligente escrito en Solidity y el segundo es el script de compilación, los cuales no requieren las bibliotecas web3.js o ethers.js.
+
+Aunque estamos usando una librería diferente, estos dos archivos siguen siendo idénticos. El primero es el contrato inteligente escrito en Solidity y el segundo es el script de compilación, los cuales no requieren las librerías web3.js o ethers.js.
 
 ### El archivo del contrato
 
-El contrato que usaremos es un incrementador muy simple (llamado arbitrariamente _Incrementer.sol_, y que puede encontrar [here](/code-snippets/web3-contract-local/Incrementer.sol)). El código de Solidity es el siguiente:
+El contrato que usaremos es un incrementador muy simple (llamado arbitrariamente _Incrementer.sol_, y que puede encontrar [aquí](/code-snippets/web3-contract-local/Incrementer.sol)). El código de Solidity es el siguiente:
 
 ```solidity
 --8<-- 'web3-contract-local/Incrementer.sol'
@@ -104,7 +105,7 @@ Nuestra función `constructor`, que se ejecuta cuando se implementa el contrato,
 ### El archivo de compilación
 
 
-El único propósito del archivo _compile.js_ (nombrado arbitrariamente, y que puede encontrar [aquí] [here](/code-snippets/web3-contract-local/compile.js)), es usar el compilador Solidity para generar el código de bytes y interfaz de nuestro contrato.
+El único propósito del archivo _compile.js_ (nombrado arbitrariamente, y que puede encontrar [aquí](/code-snippets/web3-contract-local/compile.js)), es usar el compilador Solidity para generar el código de bytes y interfaz de nuestro contrato.
 
 Primero, necesitamos cargar los diferentes módulos que usaremos para este proceso. Los módulos _path_ y _fs_ están incluidos por defecto en Node.js (por eso no tuvimos que instalarlo antes).
 
@@ -124,7 +125,7 @@ En esta sección veremos algunas diferencias entre bibliotecas con respecto al d
 ### El archivo desplegado
 
 
-El archivo de implementación (que puede encontrar [here](/code-snippets/ethers-contract-local/deploy.js)) se divide en dos subsecciones: la inicialización y el contrato de implementación.
+El archivo de implementación (que puede encontrar [aquí](/code-snippets/ethers-contract-local/deploy.js)) se divide en dos subsecciones: la inicialización y el contrato de implementación.
 
 
 Primero, necesitamos cargar nuestro módulo ethers.js y exportar el archivo _compile.js_, del cual extraeremos el `bytecode` y` abi`.
@@ -144,7 +145,7 @@ Para desplegar el contrato, primero necesitamos crear una instancia local usando
 En este apartado repasaremos rápidamente los archivos que interactúan con nuestro contrato, ya sea realizando llamadas o enviando transacciones para modificar su almacenamiento.
 
 
-Primero, revisemos el archivo _get.js_ (el más simple de todos, que puede encontrar (the simplest of them all, which you can find [here](/code-snippets/ethers-contract-local/get.js))), que recupera el valor actual almacenado en el contrato . Necesitamos cargar nuestro módulo ethers.js y exportar el archivo _compile.js_, del cual extraeremos el `abi`. A continuación, definimos el proveedor para poder acceder a los métodos necesarios para llamar a nuestro contrato.
+Primero, revisemos el archivo _get.js_ (el más simple de todos, que puede encontrar (the simplest of them all, which you can find [aquí](/code-snippets/ethers-contract-local/get.js))), que recupera el valor actual almacenado en el contrato . Necesitamos cargar nuestro módulo ethers.js y exportar el archivo _compile.js_, del cual extraeremos el `abi`. A continuación, definimos el proveedor para poder acceder a los métodos necesarios para llamar a nuestro contrato.
 
 
 El siguiente paso es crear una instancia local del contrato usando el comando `ethers.Contract (contractAddress, abi, provider)`. El `contractAddress` se registra en la consola mediante el archivo _deploy.js_. Esta instancia local se está definiendo con el `proveedor`, por lo que solo están disponibles los métodos de solo lectura. Luego, envuelto en una función asíncrona, podemos escribir la llamada del contrato ejecutando `contractInstance.myMethods ()`, donde establecemos el método o función que queremos llamar y proporcionamos las entradas para esta llamada. Esta promesa devuelve los datos que podemos iniciar sesión en la consola. Y por último, ejecutamos nuestra función "get".
@@ -152,7 +153,7 @@ El siguiente paso es crear una instancia local del contrato usando el comando `e
 --8<-- 'ethers-contract-local/get.js'
 ```
 
-Definamos ahora el archivo para enviar una transacción que agregará el valor proporcionado a nuestro número. El archivo _increment.js_ [here](/code-snippets/ethers-contract-local/increment.js)) es algo diferente al ejemplo anterior, y eso se debe a que aquí estamos modificando los datos almacenados, y para ello, necesitamos enviar una transacción que pague el gas. En el caso de ethers.js, la inicialización es similar a la del script de implementación, donde definimos un proveedor y una billetera. Sin embargo, también se incluyen la dirección del contrato y el valor agregado.
+Definamos ahora el archivo para enviar una transacción que agregará el valor proporcionado a nuestro número. El archivo _increment.js_ [aquí](/code-snippets/ethers-contract-local/increment.js)) es algo diferente al ejemplo anterior, y eso se debe a que aquí estamos modificando los datos almacenados, y para ello, necesitamos enviar una transacción que pague el gas. En el caso de ethers.js, la inicialización es similar a la del script de implementación, donde definimos un proveedor y una billetera. Sin embargo, también se incluyen la dirección del contrato y el valor agregado.
 
 
 
@@ -165,7 +166,7 @@ Luego, usamos el método `increment` de la instancia local, proporcionando el va
 ```js
 --8<-- 'ethers-contract-local/increment.js'
 ```
-El archivo _reset.js_ (que puede encontrar  [aqui](/code-snippets/ethers-contract-local/reset.js), es casi idéntico al ejemplo anterior. La única diferencia es que necesitamos llamar al método `reset ()` que no toma ninguna entrada. En este caso, estamos configurando manualmente el límite de gas de la transacción en `40000`, ya que el método` calculateGas () `devuelve un valor no válido (algo en lo que estamos trabajando).
+El archivo _reset.js_ (que puede encontrar  [aquí](/code-snippets/ethers-contract-local/reset.js), es casi idéntico al ejemplo anterior. La única diferencia es que necesitamos llamar al método `reset ()` que no toma ninguna entrada. En este caso, estamos configurando manualmente el límite de gas de la transacción en `40000`, ya que el método` calculateGas () `devuelve un valor no válido (algo en lo que estamos trabajando).
 
 
 
@@ -224,5 +225,5 @@ Con la siguiente salida:
 
 ## Nosotros queremos saber de ti
 
-Este ejemplo proporciona un contexto sobre cómo puede comenzar a trabajar con Moonbeam y cómo puede probar sus características de compatibilidad con Ethereum, como la biblioteca ethers.js. Estamos interesados ​​en conocer su experiencia siguiendo los pasos de esta guía o su experiencia probando otras herramientas basadas en Ethereum con Moonbeam. No dudes en unirte a nosotros en [Moonbeam Discord here](https://discord.gg/PfpUATX). Nos encantaría escuchar sus comentarios sobre Moonbeam y responder cualquier pregunta que tengas.
+Este ejemplo proporciona un contexto sobre cómo puede comenzar a trabajar con Moonbeam y cómo puede probar sus características de compatibilidad con Ethereum, como la biblioteca ethers.js. Estamos interesados ​​en conocer su experiencia siguiendo los pasos de esta guía o su experiencia probando otras herramientas basadas en Ethereum con Moonbeam. No dudes en unirte a nosotros en [Moonbeam Discord ](https://discord.gg/PfpUATX). Nos encantaría escuchar sus comentarios sobre Moonbeam y responder cualquier pregunta que tengas.
 
